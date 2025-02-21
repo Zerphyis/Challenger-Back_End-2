@@ -1,16 +1,16 @@
 package dev.Zerphyis.planinha.controllers;
 
+import dev.Zerphyis.planinha.entity.expenses.DataExpenses;
 import dev.Zerphyis.planinha.entity.expenses.Expenses;
-import dev.Zerphyis.planinha.entity.revunue.DataRevunue;
-import dev.Zerphyis.planinha.entity.revunue.Revenue;
 import dev.Zerphyis.planinha.services.ServiceExpenses;
-import dev.Zerphyis.planinha.services.ServiceRevunue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+
+
 @RestController
 @RequestMapping("/despesas")
 public class ControllerExpenses {
@@ -18,9 +18,9 @@ public class ControllerExpenses {
     ServiceExpenses service;
 
     @PostMapping
-    public ResponseEntity<Expenses> register(@RequestBody DataRevunue data){
+    public ResponseEntity<Expenses> register(@RequestBody DataExpenses data){
         Expenses returnData =service.registerExpenses(data);
-        return  ResponseEntity.status(201).body(returnData);
+ return  ResponseEntity.status(201).body(returnData);
     }
 
     @GetMapping
@@ -29,13 +29,26 @@ public class ControllerExpenses {
 
     }
 
+    @GetMapping("/buscar")
+    public ResponseEntity<List<Expenses>> searchByDescription(@RequestParam String descricao) {
+        return ResponseEntity.ok(service.listByDescription(descricao));
+    }
+
+    @GetMapping("/{ano}/{mes}")
+    public ResponseEntity<List<Expenses>> listByMonth(
+            @PathVariable int ano,
+            @PathVariable int mes) {
+        List<Expenses> expenses = service.listByMonth(ano, mes);
+        return ResponseEntity.ok(expenses);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Optional> listById(@PathVariable Long id) {
         return ResponseEntity.ok(service.listIdExpenses(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Expenses> update(@PathVariable Long id, @RequestBody DataRevunue data) {
+    public ResponseEntity<Expenses> update(@PathVariable Long id, @RequestBody DataExpenses data) {
         return ResponseEntity.ok(service.updateExpenses(id, data));
     }
 

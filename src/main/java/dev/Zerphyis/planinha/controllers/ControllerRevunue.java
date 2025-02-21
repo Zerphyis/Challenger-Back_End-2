@@ -1,5 +1,6 @@
 package dev.Zerphyis.planinha.controllers;
 
+import dev.Zerphyis.planinha.entity.expenses.Expenses;
 import dev.Zerphyis.planinha.entity.revunue.DataRevunue;
 import dev.Zerphyis.planinha.entity.revunue.Revenue;
 import dev.Zerphyis.planinha.services.ServiceRevunue;
@@ -18,8 +19,21 @@ public class ControllerRevunue {
 
     @PostMapping
     public ResponseEntity<Revenue> register(@RequestBody DataRevunue data){
-       Revenue returnData =service.registerRevunue(data);
+       Revenue returnData = service.registerRevunue(data);
         return  ResponseEntity.status(201).body(returnData);
+    }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<List<Revenue>> searchByDescription(@RequestParam String descricao) {
+        return ResponseEntity.ok(service.listByDescription(descricao));
+    }
+
+    @GetMapping("/{ano}/{mes}")
+    public ResponseEntity<List<Revenue>> listByMonth(
+            @PathVariable int ano,
+            @PathVariable int mes) {
+        List<Revenue> revunue = service.listByMonth(ano, mes);
+        return ResponseEntity.ok(revunue);
     }
 
     @GetMapping
